@@ -1,3 +1,5 @@
+/*第一个JSON服务器*/
+
 var http = require('http');
 
 function handle_incoming_request(req,res) {
