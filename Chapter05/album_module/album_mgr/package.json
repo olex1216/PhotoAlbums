@@ -1,0 +1,15 @@
+{
+  "name": "album_manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./lib/albums.js",
+  "private": true,
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "olex",
+  "license": "ISC"
+}
