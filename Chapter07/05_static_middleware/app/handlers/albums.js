@@ -8,6 +8,7 @@ exports.version = "0.1.0";
 exports.list_all = function(req,res) {
     load_album_list(function(err,albums) {
         if(err){
+
             helpers.send_failure(res,500,err);
             return;
         }
@@ -45,7 +46,7 @@ exports.album_by_name = function (req, res) {
 /*相册列表*/
 function load_album_list(callback) {
     fs.readdir(
-        "albums",
+        "../static/albums",
         function (err, files) {
             if (err) {
                 callback({ error: "file_error",
@@ -63,7 +64,7 @@ function load_album_list(callback) {
                 }
 
                 fs.stat(
-                    "albums/" + files[index],
+                    "../static/albums/" + files[index],
                     function (err, stats) {
                         if (err) {
                             callback({ error: "file_error",
@@ -85,7 +86,7 @@ function load_album_list(callback) {
 /*照片列表*/
 function load_album(album_name,page,page_size,callback) {
     fs.readdir(
-        "albums/"+album_name,
+        "../static/albums/"+album_name,
         function (err, files) {
             if (err) {
                 if (err.code == "ENOENT") {
@@ -98,7 +99,7 @@ function load_album(album_name,page,page_size,callback) {
             }
 
             var only_files = [];
-            var path = "albums/" + album_name +"/";
+            var path = "../static/albums/" + album_name +"/";
             // 检测是否文件
             (function iterator(index) {
                 //检测结束

@@ -14,6 +14,7 @@ $(function() {
             tmpl = data;
         });
 
+
         $.getJSON("/v1/albums/"+album_name+".json", function(d) {
 
             var photo_d = massage_album(d);

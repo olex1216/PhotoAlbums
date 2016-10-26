@@ -10,7 +10,7 @@ exports.send_success = function(res, data){
 };
 
 /*请求失败*/
-exports.send_failure = function(res, server_code, err) {
+exports.send_failure = function(res, code, err) {
     res.writeHead(code, { "Content-Type" : "application/json" });
     res.end(JSON.stringify(err) + "\n");
 };
