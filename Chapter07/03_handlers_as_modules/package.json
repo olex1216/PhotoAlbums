@@ -1,0 +1,15 @@
+{
+  "name": "Photo-Sharing",
+  "version": "0.0.2",
+  "description": "Phtot Sharing App with express",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "3.x",
+    "async": "0.1.x"
+  },
+  "author": "olex",
+  "license": "ISC"
+}
