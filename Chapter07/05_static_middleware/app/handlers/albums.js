@@ -55,30 +55,30 @@ function load_album_list(callback) {
             }
 
             var only_dirs = [];
-            // 检测是否为文件夹
-            (function iterator(index) {
-                //检测结束
-                if (index == files.length) {
-                    callback(null, only_dirs);
-                    return;
-                }
 
-                fs.stat(
-                    "../static/albums/" + files[index],
-                    function (err, stats) {
-                        if (err) {
-                            callback({ error: "file_error",
-                                     message: JSON.stringify(err) });
-                            return;
+            // 检测是否为文件夹
+            async.forEach(
+                files,
+                function (element, cb) {
+                    fs.stat(
+                        "../static/albums/" + element,
+                        function (err, stats) {
+                            if (err) {
+                                cb({ error: "file_error",
+                                       message: JSON.stringify(err) });
+                                return;
+                            }
+                            if (stats.isDirectory()) {
+                                only_dirs.push({ name: element });
+                            }
+                            cb(null);
                         }
-                        if (stats.isDirectory()) {
-                            var obj = {name:files[index]};
-                            only_dirs.push(obj);
-                        }
-                        iterator(index + 1);
-                    }
-                );
-            })(0);
+                    );
+                },
+                function (err) {
+                    callback(err, err ? null : only_dirs);
+                }
+            );
         }
     );
 }
@@ -90,7 +90,7 @@ function load_album(album_name,page,page_size,callback) {
         function (err, files) {
             if (err) {
                 if (err.code == "ENOENT") {
-                    callback(no_such_album());
+                    callback(helpers.no_such_album());
                 } else {
                     callback({ error: "file_error",
                                message: JSON.stringify(err) });
@@ -100,35 +100,40 @@ function load_album(album_name,page,page_size,callback) {
 
             var only_files = [];
             var path = "../static/albums/" + album_name +"/";
-            // 检测是否文件
-            (function iterator(index) {
-                //检测结束
-                if (index == files.length) {
-                    var ps ;
-                    ps = only_files.splice(page*page_size,page_size);
-                    var obj = {short_name:album_name,
-                                photos:ps};
-                    callback(null, obj);
-                    return;
-                }
 
-                fs.stat(
-                    path + files[index],
-                    function (err, stats) {
-                        if (err) {
-                            callback({ error: "file_error",
-                                     message: JSON.stringify(err) });
-                            return;
+            // 检测是否文件
+            async.forEach(
+                files,
+                function (element, cb) {
+                    fs.stat(
+                        path + element,
+                        function (err, stats) {
+                            if (err) {
+                                cb({ error: "file_error",
+                                    message: JSON.stringify(err) });
+                                return;
+                            }
+                            if (stats.isFile()) {
+                                var obj = { filename: element,
+                                            desc: element };
+                                only_files.push(obj);
+                            }
+                            cb(null);
                         }
-                        if (stats.isFile()) {
-                            var obj = {filename:files[index],
-                                    desc:files[index]};
-                            only_files.push(obj);
-                        }
-                        iterator(index + 1);
+                    );
+                },
+                function (err) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        var ps = page_size;
+                        var photos = only_files.slice(page * ps, ps);
+                        var obj = { short_name: album_name,
+                                    photos: photos };
+                        callback(null, obj);
                     }
-                );
-            })(0);
+                }
+            );
         }
     );
 
